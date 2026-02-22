@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Main Step: Edit below title -->
+    <title>Cybersecurity Escape Rooms</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <a href="#executivesummary">Executive Summary</a>
+      <a href="#methodologyandtools">Methodology and Tools</a>
+      <a href="room-by-room-logs.html" target="_blank" rel="noopener">Room-by-Room Logs</a>
+      <a href="reflection-ethics-privacy.html" target="_blank" rel="noopener">Reflection, Ethics, and Privacy</a>
+      <a href="evidence.html" target="_blank" rel="noopener">Evidence</a>
+
+
+      <button class="toggle-btn" onclick="toggleDarkMode()">
+        Toggle Dark Mode
+      </button>
+    </nav>
+
+    <!-- Step 1 Start: Header Part -->
+
+    <div class="header">
+      <h1>Cybersecurity Escape Rooms</h1>
+      <div class="authors">
+        <p>
+          <a href="#">Rebecca Holland</a><sup>1</sup>,
+        </p>
+        <p>
+          <sup></sup>University of the Arts London
+        </p>
+        <p>
+          ><a href="mailto:example1@email.com">r.holland1120221@arts.ac.uk</a>,
+        </p>
+      </div>
+    </div>
+
+    <div class="content-section" id="executivesummary">
+      <h2>Executive Summary</h2>
+      <p><strong>Tasks completed:</strong></p>
+<ul>
+  <li>Task 1 (Social Engineering Password Patterns)</li>
+  <li>Task 2 (Wiretap the Secret (packet capture) Forensics)</li>
+  <li>Task 4 (Membership Inference (can we tell if a record was in the training set?))</li>
+</ul>
+      <h3> Task 1:</h3>
+      <h4>Social Engineering Password Patterns Level 1:</h4>
+      <p>FOUND username: louise</p>
+      <p>FOUND password: northbridgeemily</p>
+      <p>Secret message: Level 1 secret: Security starts with people.</p>
+
+      <h4>Social Engineering Password Patterns Level 2:</h4>
+      <p>FOUND username: louise</p>
+      <p>FOUND password: lunahannah</p>
+      <p>Secret message: Level 2 secret: Weak patterns make strong attacks.</p>
+
+      <h3> Task 2:</h3>
+      <p><strong>Server Discovery:</strong></p>
+      <p>Fignal Server IP Address: 127.0.0.1</p>
+      <p>Fignal Server Listening Port: 61441</p>
+        <ul> </ul>
+      <p><strong>User Credentials Extraction:</strong></p>
+        <a href="images/users.png" target="_blank">
+          - Excel table of user data
+        </a>
+      <ul> </ul>
+      <p><strong>Message Content Analysis:</strong></p>
+      <p>Total Messages: 30</p>
+      <a href="images/message.png" target="_blank">
+          - Excel table of message data
+        </a>
+        <ul> </ul>
+        <p><em>Security Vulnerability Assessment, Network Security Recommendations, and further Message Content Analysis, found in the Room-by-Room Logs</em></p>
+
+      <h3> Task 4:</h3>
+      <h4>Membership Inference Attack:</h4>
+      <p><strong>Final attack accuracy:</strong> 88%</p>
+      <p><strong>IN (member) accuracy:</strong> 100%</p>
+      <p><strong>OUT (non-member) accuracy:</strong> 76%</p>
+        <ul> </ul>
+      <p><strong>Key Findings:</strong></p>
+      <ul>
+        <li>Initial attack appeared successful (83%) but failed during proper evaluation due to dataset imbalance.</li>
+        <li>After balancing IN and OUT samples, the attack successfully inferred whether records were part of the training set.</li>
+        <li>A clear loss gap between training and non-training data revealed privacy leakage caused by model overfitting.</li>
+      </ul>
+
+    </div>
+
+        <div class="content-section" id="methodologyandtools">
+      <h2>Methodology and Tools</h2>
+      <h3> Task 1: Social Engineering Password Patterns</h3>
+      <h3>>Lab setup:</h3>
+      <p><strong>Environment:</strong> Local isolated lab running a Flask-based authentication server on 127.0.0.1:5000.</p>
+      <p><strong>APIs tested:</strong></p>
+      <ul>
+        <li>/api/level1</li>
+        <li>/api/level2</li>
+      </ul>
+      <p><strong>Data source:</strong> Employee Profile.txt</p>
+      <p><strong>Scope:</strong> Testing was limited strictly to the provided environment and accounts, with no interaction with real users or external systems.</p>
+      <p><strong>Tools used:</strong> Python, NLKT, Flask test server, Requests.</p>
+      <h3>>Methodology:</h3>
+      <ul>
+        <li><strong>Term extraction:</strong> Relevant words and numbers were extracted from the employee profile using a scripted NLP-based approach. English stopwords were removed to reduce noise, producing a refined list of meaningful terms.</li>
+        <li><strong>Credential generation:</strong> Username and password candidates were generated according to the strict rules defined for Level 1 and Level 2.</li>
+        <li><strong>Brute-force execution:</strong> Python script iterated through all valid username/password combinations and submitted POST requests to the appropriate API endpoint until valid credentials were discovered.</li>
+        <li><strong>Result analysis:</strong> Time taken, number of attempts, and credential complexity were recorded and analysed to understand how password design choices affected attack feasibility.</li>
+      </ul>
+
+      <h3> Task 2: Wiretap the Secret (packet capture) Forensics</h3>
+      <h3>>Lab setup:</h3>
+      <p><strong>Application:</strong> Fignal internal messaging platform.</p>
+      <p><strong>Traffic capture:</strong> Live packet capture using Wireshark on the loopback interface.</p>
+      <p><strong>Data source:</strong> Generated traffic from the provided Fignal server and client executables.</p>
+      <p><strong>Scope:</strong> Analysis limited to the authorised lab environment provided for this assignment.</p>
+      <p><strong>Tools used:</strong> Wireshark, Display filters, Follow TCP Stream, Screenshots, Excel, PowerShell.</p>
+      <h3>>Methodology:</h3>
+      <ul>
+        <li>Captured network traffic while the Fignal client generated authentication and messaging activity.</li>
+        <li>Applied protocol and display filters to isolate HTTP traffic.</li>
+        <li>Inspected packet payloads and reassembled TCP streams to extract credentials and message content  .</li>
+        <li>Documented security weaknesses based on observed behaviour.</li>
+        <li>Designed network and application-layer mitigations grounded in the findings.</li>
+      </ul>
+
+      <h3> Task 4: Membership Inference Attack</h3>
+      <h3>>Lab setup:</h3>
+      <p><strong>Environment:</strong> Python with PyTorch.</p>
+      <p><strong>Dataset:</strong> CIFAR-10</p> 
+      <p><strong>OS:</strong> Windows</p> 
+      <p><strong>Tools used:</strong> PyTorch, Torchvision, NumPy, scikit-learn, tqdm.</p>
+      <p>The experiment followed a standard shadow model → attack model → evaluation pipeline.</p>
+
+
+      <h3>>Methodology:</h3>
+      <ul>
+      <li>Shadow models were trained to mimic the target model’s behaviour.</li>
+      <li>Loss and prediction correctness were extracted as features.</li>
+      <li>An attack classifier was trained to distinguish between training (IN) and non-training (OUT) samples.</li>
+      <li>Initial results exposed a class imbalance flaw.</li>
+      <li>Balancing the dataset enabled accurate inference against the target model.</li>
+      <li>Final evaluation confirmed attack success on unseen data.</li>
+      </ul>
+    </div>
+
+    <div class="content-section" id="conclusion">
+      <h2>Conclusion</h2>
+      <p>This project brought together a range of practical cybersecurity skills, combining technical investigation with structured analysis and clear documentation. By working through each task and room, a methodical approach was taken to understanding the target environments, defining simple threat models, and testing different attack paths. Failed attempts and pivots were an important part of this process, helping to refine techniques and reflecting how real-world security work is often iterative rather than linear.</p>
+      <p>Across the project, relevant tools and techniques were applied in realistic scenarios, leading to the successful recovery of the required flags and final secret string. These outcomes demonstrate not only technical effectiveness but also the importance of careful reasoning, patience, and evidence-based decision making.</p>
+      <p>A practical challenge arose during Task 4, where the workload proved to be resource-intensive and the primary laptop experienced significant performance limitations. To avoid delays and ensure the task could be completed accurately, an alternative computer was used. This allowed the work to continue efficiently without affecting the methodology or validity of the results.</p>
+      <p>Overall, the project strengthened hands-on cybersecurity skills, improved confidence with industry-relevant tools, and reinforced the importance of adaptability and clear reporting. The experience gained is directly applicable to future security testing and analysis work.</p>
+    </div>
+
+
+    <!-- Step 9 End: Add your paper acknowledgement -->
+
+    <div class="footer">
+      <!-- Step 10 Start: Edit footer -->
+      <p>© 2026 Rebecca Holland. All rights reserved.</p>
+      <!-- Step 10 End: Edit footer -->
+      <!-- Please do not remove below code. -->
+      <p>
+        Website template free to borrow from
+        <a
+          href="https://github.com/indramal/iNdra-GitHub-Page-Template-For-Resarch"
+          >here</a
+        >.
+      </p>
+       <div>
+          <!-- Please remove below code of page count or edit indragithubpagetemplate with your name. -->
+    <img src="https://profile-counter.glitch.me/indragithubpagetemplate/count.svg" alt="Profile Counter">
+</div>
+
+    <button class="scrollUpBtn" id="scrollUpBtn" onclick="scrollToTop()">
+      ⬆
+    </button>
+
+    <script src="script.js"></script>
+  </body>
+</html>

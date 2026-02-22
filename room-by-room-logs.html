@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Room-by-Room Logs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="#socialengineering">Social Engineering Password Patterns</a>
+    <a href="#wiretap">Wiretap the Secret Forensics</a>
+    <a href="#member">Membership Inference Attack</a>
+
+  </nav>
+
+  <div class="content-section" id="socialengineering">
+    <h1>Room-by-Room Logs</h1>
+
+    <h2>T1 - Level 1 - Social Engineering Password Patterns:</h2>
+    <h3>Goal and simple threat model</h3>
+    <p><strong>Asset:</strong> Secret message protected by Level 1 authentication.</p>
+    <p><strong>Attacker capability:</strong> Unauthenticated external attacker with access to personal employee information.</p>
+    <p><strong>Assumptions:</strong></p>
+    <ul>
+      <li>No rate limiting or account lockout</li>
+      <li>Password derived directly from profile terms</li>
+    </ul>
+    <p><strong>Success condition:</strong> Recover valid credentials and secret message.</p>
+
+    <h3>Attempts and reasoning</h3>
+    <p><strong>Initial hypothesis:</strong> The employee uses recognisable personal terms (names, locations) concatenated into simple credentials.</p>
+    <p><strong>Failed path:</strong> Initially, the Python script would pick out irrelevant terms, such as "University", and would only recognise the first section of the document, ignoring the second half.</p>
+    <p><strong>Resolution:</strong> Rewrote script using an NLP-based approach that focused on nouns.</p>
+
+    <h3>Mitigation plan</h3>
+    <p><strong>Root cause:</strong> Password composed entirely of predictable personal information with no complexity or entropy.</p>
+    <p><strong>Recommended fixes:</strong></p>
+    <ul>
+      <li>Enforce minimum password length and unpredictability</li>
+      <li>Block use of personal data in passwords</li>
+      <li>Implement rate limiting and login attempt monitoring</li>
+    </ul>
+
+    <h3>Validation approach</h3>
+
+    <p><strong>Tests:</strong></p>
+    <ul>
+      <li>Attempt reuse of personal terms → authentication should fail</li>
+      <li>Rapid login attempts → rate limiting should trigger</li>
+    </ul>
+
+    <p><strong>Metrics:</strong></p>
+    <ul>
+      <li>Failed attempts per minute</li>
+      <li>Alert generation on abuse patterns</li>
+    </ul>
+
+    <p><strong>Rollback:</strong></p>
+    <ul>
+      <li>Restore previous password policy configuration if legitimate access is disrupted</li>
+    </ul>
+
+    <h2>T1 - Level 2 - Social Engineering Password Patterns:</h2>
+    <h3>Goal and simple threat model</h3>
+    <p><strong>Asset:</strong> Higher-security secret message and IoT device access.</p>
+    <p><strong>Attacker capability:</strong> Same as Level 1, with ability to automate requests.</p>
+    <p><strong>Success condition:</strong> Authenticate and retrieve secret message and IoT data.</p>
+
+    <h3>Attempts and reasoning</h3>
+    <p><strong>Pivot from Level 1:</strong> Inclusion of numeric terms significantly increases theoretical password combinations.</p>
+    <p><strong>Failed path:</strong> Initially, the Python script would pick out irrelevant terms, such as "University", and would only recognise the first section of the document, ignoring the second half.</p>
+    <p><strong>Resolution:</strong> Rewrote script using an NLP-based approach that focused on nouns.</p>
+
+    <h3>Mitigation plan</h3>
+    <p><strong>Root cause:</strong> Continued reliance on human-memorable, relationship-based word pairings.</p>
+    <p><strong>Recommended fixes:</strong></p>
+    <ul>
+      <li>Prohibit dictionary-based password construction</li>
+      <li>Require passphrases or password manager-generated secrets</li>
+      <li>Add multi-factor authentication for IoT access</li>
+    </ul>
+
+    <h3>Validation approach</h3>
+    <p><strong>Tests:</strong></p>
+    <ul>
+      <li>Replay brute-force script → authentication should fail</li>
+      <li>Access IoT endpoint without valid session → denied</li>
+    </ul>
+
+    <p><strong>Metrics:</strong></p>
+    <ul>
+      <li>Authentication failure rate</li>
+      <li>IoT access logs</li>
+    </ul>
+
+    <p><strong>Rollback:</strong></p>
+    <ul>
+      <li>Immediate credential rotation if compromise is suspected</li>
+    </ul>
+
+    <div class="content-section" id="wiretap">
+    <h2>T2 - Wiretap the Secret (packet capture) Forensics:</h2>
+    <h3>Goal and simple threat model</h3>
+    <p><strong>Asset:</strong> User credentials, internal messages, server metadata.</p>
+    <p><strong>Attacker capability:</strong> Passive network attacker with packet capture access.</p>
+    <p><strong>Assumptions:</strong></p>
+    <ul>
+      <li>No encryption in transit</li>
+      <li>Attacker does not need to modify traffic</li>
+    </ul>
+    <p><strong>Success condition:</strong> Extract sensitive information and identify security flaws.</p>
+
+    <h3>Attempts and reasoning</h3>
+    <p>Initial inspection of the capture showed extensive HTTP traffic between the Fignal client and server. Display filters were applied to isolate authentication and messaging endpoints. Examination of packet payloads revealed readable JSON structures containing credentials and message content.</p>
+    <p>To confirm the full scope of exposure, TCP streams were reconstructed, allowing complete login sessions and message exchanges to be viewed in context. This confirmed that sensitive data was consistently transmitted in plaintext.</p>
+
+    <h3>Security Vulnerability Assessment</h3>
+    <p>Below are five security vulnerabilities directly identified from the Wireshark capture, followed by a concrete HTTP vs HTTPS analysis.</p>
+
+    <ol>
+      <li>
+        <strong>Plaintext transmission of user credentials: </strong>
+        <p>Internal messages sent via /api/messages are transmitted as plaintext JSON over HTTP.</p>
+        <p><strong>Risk:</strong> An attacker monitoring the network could capture valid credentials and reuse them to impersonate users, access sensitive data, or escalate privileges.</p>
+      </li>
+
+      <li>
+        <strong>Plaintext transmission of message content: </strong>
+        <p>Usernames and passwords are transmitted in plaintext within HTTP POST requests to /api/login. Credentials were visible directly in Wireshark without any decryption.</p>
+        <p><strong>Risk:</strong> An attacker could eavesdrop on private internal communications, leading to information leakage, social engineering, or corporate espionage.</p>
+      </li>
+
+      <li>
+        <strong>Use of HTTP instead of HTTPS: </strong>
+        <p>All application traffic uses HTTP, providing no confidentiality, integrity, or server authentication.</p>
+        <p><strong>Risk:</strong> This enables man-in-the-middle attacks, traffic interception, and message tampering without detection.</p>
+      </li>
+
+      <li>
+        <strong>Lack of message sender validation: </strong>
+        <p>The sender identity is inferred from the session rather than explicitly validated within the message payload.</p>
+        <p><strong>Risk:</strong> If session handling is compromised, attackers could impersonate other users and inject false messages.</p>
+      </li>
+
+      <li>
+        <strong>Excessive information disclosure: </strong>
+        <p>Server responses disclose usernames, user IDs, and backend software details (e.g. Werkzeug and Python versions).</p>
+        <p><strong>Risk:</strong> This information assists attackers in profiling the system and crafting targeted exploits.</p>
+      </li>
+    </ol>
+
+    <p><strong>Why transmitting data over HTTP is dangerous (lab example)</strong> </p>
+    <p>HTTP provides no encryption, integrity protection, or authentication. During this lab, login requests contained plaintext JSON fields including usernames, passwords, full names, and departments. These were immediately readable in Wireshark and could be reused by an attacker without any cracking or decryption.</p>
+    <p>Similarly, internal messages such as operational updates were visible in real time. If HTTPS had been used, this information would have been encrypted and unreadable to anyone without the appropriate cryptographic keys.</p>
+
+    <h3>Network Security Recommendations</h3>
+
+    <p><strong>Part A: Firewall rules</strong></p>
+    <p><strong>Rule 1: Allow authorised client access</strong></p>
+    <ul>
+      <li>Action: ALLOW</li>
+      <li>Protocol: TCP</li>
+      <li>Source IP: 192.168.100.234, 192.168.100.168, 192.168.100.189</li>
+      <li>Destination Port: 61441</li>
+    </ul>
+
+    <p><strong>Rule 2: Block unauthorised access</strong></p>
+    <ul>
+      <li>Action: DENY</li>
+      <li>Protocol: TCP</li>
+      <li>Source IP: ANY</li>
+      <li>Destination Port: 61441</li>
+    </ul>
+
+    <p><strong>Rule 3: Default deny</strong></p>
+    <ul>
+      <li>Action: DENY</li>
+      <li>Protocol: ALL</li>
+      <li>Source IP: ANY</li>
+      <li>Destination Port: ANY</li>
+    </ul>
+
+    <p><strong>Part B: Application security improvements</strong></p>
+    <ol>
+      <li><strong>Enforce HTTPS</strong></li>
+      <p><strong>Why:</strong></p> Prevents interception of credentials and messages.
+      <p><strong>How:</strong></p> Enable TLS, deploy certificates, redirect HTTP to HTTPS, disable plaintext HTTP.
+      <li><strong>Secure authentication</strong></li>
+      <p><strong>Why:</strong></p> Plaintext password handling was observed.
+      <p><strong>How:</strong></p> passwords with bcrypt/Argon2, use secure session tokens, apply rate limiting.
+      <li><strong>Proper access control</strong></li>
+      <p><strong>Why:</strong></p> Sender identity is not explicitly validated.
+      <p><strong>How:</strong></p> Bind actions to authenticated identities, validate server-side, implement RBAC and logging.
+    </ol>
+
+    <h3>Message Analysis</h3>
+    <p>The messages observed in the captured network traffic consist of internal workplace communications between authenticated users of the Fignal application. The content primarily relates to operational and business activities, including meeting coordination, report preparation, software development issues, deployment status, and administrative tasks such as expense reviews. This indicates that the messaging system is used for day-to-day organisational collaboration. All messages are transmitted in plaintext over HTTP, meaning that sensitive internal business information could be intercepted by an attacker with network access, representing a significant security risk.</p>
+
+  <div class="content-section" id="member">
+    <h2>T4 - Membership Inference Attack:</h2>
+   <h3>Shadow Model Training</h3>
+    <p><strong>a. Goal and Threat Model</strong></p>
+    <ul>
+      <li><strong>Goal:</strong> Approximate the target model’s behaviour using locally trained shadow models.</li>
+      <li><strong>Asset:</strong> Membership of individual training samples.</li>
+      <li><strong>Attacker capability:</strong> Full access to shadow model training data and outputs; no access to the target model’s training set.</li>
+    </ul>
+
+    <p><strong>b. Attempts and Reasoning</strong></p>
+    <p>Three shadow models were trained on CIFAR-10 using the same architecture and preprocessing as the target model. For each shadow model:</p>
+    <ul>
+      <li>Training data was treated as IN</li>
+      <li>Test data was treated as OUT</li>
+    </ul>
+    <p>This simulates how the target model would behave differently on seen versus unseen data.</p>
+
+    <p><strong>c. Mitigation Plan</strong></p>
+    <ul>
+      <li>Reduce overfitting via dropout, weight decay, or data augmentation.</li>
+      <li>Use early stopping based on validation loss.</li>
+    </ul>
+
+    <p><strong>d. Validation Approach</strong></p>
+    <ul>
+      <li>Compare train vs test accuracy gaps.</li>
+      <li>Verify shadow models generalise similarly to the target model.</li>
+    </ul> 
+
+
+   <h3>Attack Model Training</h3>
+    <p><strong>a. Goal and Threat Model</strong></p>
+    <ul>
+      <li><strong>Goal:</strong> Train a classifier that predicts whether a sample is IN or OUT.</li>
+      <li><strong>Attacker capability:</strong> Access to per-sample loss and correctness from shadow models.</li>
+    </ul>
+
+    <p><strong>b. Attempts and Reasoning</strong></p>
+    <p>Initial attempt (baseline):</p>
+    <ul>
+      <li>Used all extracted features without balancing.</li>
+      <li>Achieved 83.33% attack accuracy during training.</li>
+    </ul>
+    <p>However, this was misleading. Evaluation revealed:</p>
+    <ul>
+      <li>IN accuracy: 100%</li>
+      <li>OUT accuracy: 0%</li>
+      <li>Overall: 50%</li>
+    </ul>
+    <p>The model had learned to always predict “IN” due to a 5:1 imbalance in the training data.</p>
+    <ul>  </ul>
+    <p>Pivot / Fix:</p>
+     <ul>
+      <li>Enabled the provided data-balancing code.</li>
+      <li>Undersampled the majority (IN) class to match OUT samples.</li>
+      <li>Retrained the attack model.%</li>
+    </ul>
+
+    <p><strong>c. Mitigation Plan</strong></p>
+    <ul>
+      <li>Ensure balanced datasets during training.</li>
+      <li>Monitor per-class accuracy, not just headline accuracy.</li>
+      <li>Use ROC-AUC or confusion matrices during validation.</li>
+    </ul>
+
+    <p><strong>d. Validation Approach</strong></p>
+    <ul>
+      <li>Evaluate on a separate target model, not shadow data.</li>
+      <li>Require non-zero OUT accuracy as a success criterion.</li>
+      <li>Track IN/OUT accuracy symmetry.</li>
+    </ul>
+
+
+
+   <h3>Evaluation Against Target Model</h3>
+    <p><strong>a. Goal and Threat Model</strong></p>
+    <ul>
+      <li><strong>Goal:</strong> Measure real attack success against the unseen target model.</li>
+      <li><strong>Asset:</strong> Privacy of the target model’s training data.</li>
+      <li><strong>Attacker capability:</strong>Black-box access to the model’s outputs.</li>
+
+    <p><strong>b. Attempts and Reasoning</strong></p>
+    <p>Evaluation was performed on a balanced set of 100 IN and 100 OUT samples. This exposed the baseline failure and confirmed the effectiveness of balancing.</p>
+
+    <p><strong>c. Mitigation Plan</strong></p>
+    <ul>
+      <li>Reduce output confidence (e.g. temperature scaling).</li>
+      <li>Add noise to losses or predictions.</li>
+      <li>Train with differential privacy guarantees.</li>
+    </ul>
+
+    <p><strong>d. Validation Approach</strong></p>
+    <ul>
+      <li>Re-run evaluation after mitigation.</li>
+      <li>Expect reduced loss gap and attack accuracy near random guessing (≈50%).</li>
+      <li>Maintain rollback plan for deployed models.</li>
+    </ul>
+
+  </div>
+
+</body>
+</html>

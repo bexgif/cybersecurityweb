@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reflection, Ethics, and Privacy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="#socialengineering">Social Engineering Password Patterns</a>
+    <a href="#wiretap">Wiretap the Secret Forensics</a>
+    <a href="#member">Membership Inference Attack</a>
+
+  </nav>
+
+  <div class="content-section" id="socialengineering">
+    <h1>Reflection, Ethics, and Privacy</h1>
+
+    <h2>Social Engineering Password Patterns:</h2>
+    <p>This project provided a practical demonstration of how weak, pattern-based passwords can be compromised using relatively simple brute-force techniques when sufficient personal information is available. By analysing both Level 1 and Level 2 attacks, I was able to observe how changes in password construction rules affected the time required to break authentication and the overall feasibility of the attack.</p>
+    <p>A direct comparison of the results shows that increasing the password “level” did not significantly increase the time required to recover valid credentials. Level 1 required 14,082 attempts and approximately 105 seconds to complete, while Level 2 required 20,653 attempts and 174.18 seconds. Level 2 introduced more possible combinations by allowing numeric terms, but the real-world impact on attack duration was minimal. This highlights that password strength cannot be measured purely by theoretical complexity; the predictability of the chosen pattern plays a critical role in determining how quickly an attacker can succeed.</p>
+    <p>As the level increased, the number of possible password combinations grew substantially. In Level 2 alone, 28 usernames and 1,122 passwords resulted in over 31,000 possible credential combinations. If additional terms were extracted from the employee profile, the growth would be multiplicative rather than linear. For example, doubling the number of usable terms would more than double the number of two-word password combinations. Introducing special characters such as @, or allowing longer passwords made up of three or more terms, would cause the search space to expand from tens of thousands into the millions or even billions of possibilities. These magnitudes are large enough to make naïve brute-force attacks impractical, particularly when combined with defensive controls.</p>
+    <p>However, the project also demonstrated that attackers rarely explore the entire theoretical search space. Instead, they prioritise combinations that are most likely to be chosen by humans. Passwords derived from names, relationships, or emotionally meaningful words dramatically reduce effective entropy, even if numbers or additional terms are technically permitted. As a result, the practical strength of a password can be far lower than its theoretical strength.</p>
+    <p>From an attacker’s perspective, the brute-force process could be significantly sped up through optimisation. Requests could be parallelised across multiple threads or processes, reducing total runtime on systems without rate limiting. Credential attempts could also be reordered to test the most likely combinations first, based on common human password habits. More efficient data structures and early termination logic could further improve performance. These considerations reinforce the importance of assuming that attackers will use optimised and automated approaches rather than simple sequential guessing.</p>
+    <p>Reflecting on password design principles, strong passwords are those that maximise entropy while remaining resistant to pattern-based guessing. Length is generally more effective than superficial complexity rules, and unpredictability is essential. Passwords should not be derived from personal information, as such data is often accessible through social engineering, data breaches, or public sources. From a system design perspective, relying on user choice alone is insufficient. Effective systems enforce strong password policies, prevent the reuse of known-compromised or personal terms, and supplement passwords with additional controls such as multi-factor authentication, rate limiting, and monitoring.</p>
+    <p>Ethically, all activities conducted during this project remained strictly within the authorised lab environment provided by the task. No real accounts, live services, or genuine personal data were accessed. The purpose of the exercise was to understand how attackers exploit predictable behaviour, not to cause harm or invade privacy. This distinction is essential in cybersecurity education, where offensive techniques are studied to improve defensive outcomes.</p>
+    <p>Privacy considerations are closely connected to these ethical concerns. The task demonstrated how personal information, even when collected for legitimate reasons, can become a security liability if it influences authentication mechanisms. System designers should therefore assume that personal data may be exposed and ensure that authentication remains robust regardless. At the same time, defensive logging and monitoring must balance security effectiveness with data minimisation, ensuring that only necessary information is collected and retained.</p>
+    <p>Overall, this project emphasises that secure authentication is a socio-technical problem. Technical safeguards must account for human tendencies, and usability considerations must be balanced against security risk. The findings from both levels reinforce the need for layered defences and thoughtful password policies to prevent weak patterns from undermining system security.</p>
+
+
+  <div class="content-section" id="wiretap">
+    <h2>Wiretap the Secret (packet capture) Forensics:</h2>
+    <p>This exercise showed how application security can be totally compromised by insecure transport mechanisms. Plaintext network traffic enables attackers to quickly and widely extract sensitive data, in contrast to brute-force attacks, which take time and effort.</p>
+    <p>The ability to read credentials, messages, and server metadata directly from packet captures highlights why HTTPS is a baseline requirement rather than an optional enhancement. Even well-designed authentication logic becomes irrelevant if data is exposed in transit.</p>
+    <p>Ethically, all analysis was conducted within the authorised educational environment provided for this lab. The captured data was synthetic and intended for learning purposes only. Understanding these vulnerabilities is essential for improving system security, but such techniques must always be applied responsibly and lawfully.</p>
+    <p>From a privacy perspective, the lab underscores how easily user trust can be violated when transport security is neglected. Organisations must assume that network traffic may be observed and design systems that protect user data accordingly.</p>
+    <p>This task also highlights important trade-offs between security, usability, and privacy. Using plaintext HTTP may simplify development and testing, but it comes at the cost of exposing user data and violating reasonable privacy expectations. Similarly, security measures such as HTTPS, certificate management, and stricter access controls can introduce additional configuration effort and minor performance overhead, potentially increasing user friction. However, these costs are justified by the significant reduction in risk, as demonstrated by how easily sensitive information was extracted during this lab. Effective security design must therefore balance usability with strong privacy protections, favouring safeguards that minimise risk while maintaining acceptable user experience.</p>
+
+  <div class="content-section" id="member">
+    <h2>Membership Inference Attack:</h2>
+    <p>This project demonstrates that machine learning models can leak sensitive information even without direct access to training data. While the attack uses legitimate model outputs, the privacy implications are serious, especially for models trained on personal or sensitive data.</p>
+    <p>There is an inherent trade-off between model utility and privacy. Highly confident, overfitted models perform well on benchmarks but are more vulnerable to inference attacks. Adding privacy protections may slightly reduce accuracy or increase user friction, but significantly improves trust and compliance.</p>
+    <p>This work was conducted in a controlled, educational environment with no real user data. Responsible use of these techniques requires: explicit authorisation, ethical review, and a focus on defence.</p>
+
+  </div>
+
+</body>
+</html>
